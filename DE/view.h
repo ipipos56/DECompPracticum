@@ -23,7 +23,7 @@ public:
     void addPoints(int plotIndex, int graphIndex, std::vector<Utils::Point> points);
     void setData(int plotIndex, int graphIndex, QVector<double> x, QVector<double> y);
     void plot(int plotIndex);
-    Utils::GUIValues getValuesFromBoxes();
+    Utils::GUIValues getValuesFromGUI();
 
 private slots:
     void on_methodsButton_clicked();
@@ -33,7 +33,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    QVector<double> qv_x, qv_y;
     inline static int numberOfGraphs = 4;
     inline static QVector<QColor> qpens{QColor(249,65,68), QColor(248,150,30), QColor(144,190,109), QColor(39,125,161)};
     inline static QVector<QString> names{"Exact", "Euler", "Improved Euler", "Runge-Kutta"};

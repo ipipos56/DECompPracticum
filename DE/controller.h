@@ -12,15 +12,15 @@ class Controller
 
 private:
     inline static View *w;
-    inline static Model::Grid *g;
+    inline static Model::Updater *u;
     inline static Utils::GUIValues oldValues = Utils::GUIValues();
 
 public:
-    Controller(View *w, Model::Grid *g);
+    Controller(View *w, Model::Updater *u);
 
     static void setDataAndPlot(int plotIndex, int graphIndex, std::vector<Utils::Point> points);
 
-    static void takeValuesFromBoxes();
+    static void takeValuesFromGUIAndUpdateCalculations();
 
 };
 #endif // CONTROLLER_H

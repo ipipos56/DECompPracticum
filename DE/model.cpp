@@ -1,7 +1,6 @@
 #include "model.h"
 
-
-double calculateMyFunction(double tt, double yt)
+double Model::MyFunction::calculateStep(double tt, double yt)
 {
     return 5.0 - tt * tt - yt * yt + 2.0 * yt * tt;
 }
@@ -11,13 +10,13 @@ std::vector<std::vector<Utils::Point>> Model::Updater::recalculateMethods(double
     std::vector<std::vector<Utils::Point>> methods;
     Model::setValues((2.0 + y0-x0)/(4.0 * pow(M_E,(4.0*x0)) * (y0-x0-2.0)), (X-x0)/N, N, x0, y0, X);
     Model::MyExactSolution *es = new MyExactSolution();
-    methods.emplace_back(es->calculateFunction(n));
+    methods.emplace_back(es->calculatePoints(n));
     Model::EulerMethod *em = new EulerMethod();
-    methods.emplace_back(em->calculateFunction(n));
+    methods.emplace_back(em->calculateMethod(n));
     Model::ImprovedEulerMethod *iem = new ImprovedEulerMethod();
-    methods.emplace_back(iem->calculateFunction(n));
+    methods.emplace_back(iem->calculateMethod(n));
     Model::RungeKutta *rk = new RungeKutta();
-    methods.emplace_back(rk->calculateFunction(n));
+    methods.emplace_back(rk->calculateMethod(n));
     return methods;
 }
 
@@ -80,14 +79,14 @@ Utils::Point Model::NumericalMethod::calculateTotalError(int N, std::vector<Util
 
 
 
-std::vector<Utils::Point> Model::EulerMethod::calculateFunction(int n)
+std::vector<Utils::Point> Model::EulerMethod::calculateMethod(int n)
 {
    std::vector<Utils::Point> points;
    points.emplace_back(Utils::Point(x0,y0));
    double yt = y0, tt = x0;
    for(int i = 1;i<=n;i++)
    {
-       double m = calculateMyFunction(tt,yt);
+       double m = Updater::funct->calculateStep(tt,yt);
        yt = yt + h * m;
        tt = tt + h;
        points.emplace_back(Utils::Point(tt, yt));
@@ -95,34 +94,34 @@ std::vector<Utils::Point> Model::EulerMethod::calculateFunction(int n)
    return points;
 }
 
-std::vector<Utils::Point> Model::ImprovedEulerMethod::calculateFunction(int n)
+std::vector<Utils::Point> Model::ImprovedEulerMethod::calculateMethod(int n)
 {
     std::vector<Utils::Point> points;
     double yt = y0, ytt, tt = x0;
     points.emplace_back(Utils::Point(x0,y0));
     for(int i = 1;i<=n;i++)
     {
-        double m = calculateMyFunction(tt,yt);
+        double m = Updater::funct->calculateStep(tt,yt);
         ytt = yt + h * m;
         tt = tt + h;
-        double m2 = calculateMyFunction(tt,ytt);
+        double m2 = Updater::funct->calculateStep(tt,ytt);
         yt = yt + h/2.0 * (m+m2);
         points.emplace_back(Utils::Point(tt, yt));
     }
     return points;
 }
 
-std::vector<Utils::Point> Model::RungeKutta::calculateFunction(int n)
+std::vector<Utils::Point> Model::RungeKutta::calculateMethod(int n)
 {
     std::vector<Utils::Point> points;
     double yt = y0, tt = x0;
     points.emplace_back(Utils::Point(x0,y0));
     for(int i = 1;i<=n;i++)
     {
-        double m = h * calculateMyFunction(tt,yt);
-        double m2 = h * calculateMyFunction(tt + 1.0/2.0 * h , yt + 1.0/2.0 * m);
-        double m3 = h * calculateMyFunction(tt + 1.0/2.0 * h , yt + 1.0/2.0 * m2);
-        double m4 = h * calculateMyFunction(tt + h , yt + m3);
+        double m = h * Updater::funct->calculateStep(tt,yt);
+        double m2 = h * Updater::funct->calculateStep(tt + 1.0/2.0 * h , yt + 1.0/2.0 * m);
+        double m3 = h * Updater::funct->calculateStep(tt + 1.0/2.0 * h , yt + 1.0/2.0 * m2);
+        double m4 = h * Updater::funct->calculateStep(tt + h , yt + m3);
         yt = yt + 1.0/6.0 * (m+2*m2+2*m3+m4);
         tt = tt + h;
         points.emplace_back(Utils::Point(tt, yt));
@@ -131,7 +130,7 @@ std::vector<Utils::Point> Model::RungeKutta::calculateFunction(int n)
 }
 
 
-std::vector<Utils::Point> Model::MyExactSolution::calculateFunction(int n)
+std::vector<Utils::Point> Model::MyExactSolution::calculatePoints(int n)
 {
     std::vector<Utils::Point> points;
     points.emplace_back(Utils::Point(x0,y0));
@@ -163,7 +162,7 @@ void Model::setValues(double c1, double h, int n, double x0, double y0, int X)
 
 Model::Updater::Updater()
 {
-
+    funct = new MyFunction();
 }
 
 Model::EulerMethod::EulerMethod()
@@ -181,6 +180,11 @@ Model::ImprovedEulerMethod::ImprovedEulerMethod()
 }
 
 Model::RungeKutta::RungeKutta()
+{
+
+}
+
+Model::MyFunction::MyFunction()
 {
 
 }

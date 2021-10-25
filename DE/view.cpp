@@ -104,7 +104,7 @@ void View::plot(int plotIndex)
 }
 
 
-Utils::GUIValues View::getValuesFromBoxes()
+Utils::GUIValues View::getValuesFromGUI()
 {
     return Utils::GUIValues(GUIState, ui->bx_x0->value(), ui->bx_y0->value(), ui->bx_N->value(), ui->bx_X->value(), ui->bx_n0->value(), ui->bx_N2->value(), ui->ch_es->checkState(), ui->ch_em->checkState(),ui->ch_iem->checkState(), ui->ch_rk->checkState());
 }

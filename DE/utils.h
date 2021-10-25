@@ -8,6 +8,7 @@ class Utils
 {
 public:
     struct Point{
+    public:
         double x;
         double y;
         Point();
@@ -15,6 +16,7 @@ public:
     };
 
     struct GUIValues{
+    public:
         bool GUIState;
         double n0;
         double x0;
@@ -35,6 +37,7 @@ public:
     };
 
     struct ModelValues{
+    public:
         double c1;
         double h;
         int n;

@@ -1,10 +1,10 @@
 #include "controller.h"
 
 
-Controller::Controller(View *w, Model::Grid *g)
+Controller::Controller(View *w, Model::Updater *u)
 {
    this->w = w;
-   this->g = g;
+   this->u = u;
 }
 
 void Controller::setDataAndPlot(int plotIndex, int graphIndex, std::vector<Utils::Point> points)
@@ -14,16 +14,16 @@ void Controller::setDataAndPlot(int plotIndex, int graphIndex, std::vector<Utils
 }
 
 
-void Controller::takeValuesFromBoxes()
+void Controller::takeValuesFromGUIAndUpdateCalculations()
 {
-    Utils::GUIValues values = w->getValuesFromBoxes();
+    Utils::GUIValues values = w->getValuesFromGUI();
     if(values != oldValues)
     {
         oldValues = values;
         if(!values.GUIState)
         {
-            std::vector<std::vector<Utils::Point>> methodsPoints = g->recalculateMethods(values.x0,values.y0,values.N,values.X);
-            std::vector<std::vector<Utils::Point>> errorPoints = g->recalculateLocalErrors(methodsPoints);
+            std::vector<std::vector<Utils::Point>> methodsPoints = u->recalculateMethods(values.x0,values.y0,values.N,values.X);
+            std::vector<std::vector<Utils::Point>> errorPoints = u->recalculateLocalErrors(methodsPoints);
             std::vector<Utils::Point> emptyPoints;
             for(int mp = 0;mp<methodsPoints.size();mp++)
             {
@@ -51,13 +51,13 @@ void Controller::takeValuesFromBoxes()
         {
             std::vector<std::vector<Utils::Point>> outputPoints;
             std::vector<Utils::Point> emptyPoints;
-            Model::Grid::resetTotalErrors();
+            Model::Updater::resetTotalErrors();
             for(int tn = values.n0; tn <= values.N2; tn++)
             {
-                std::vector<std::vector<Utils::Point>> methodsPoints = g->recalculateMethods(values.x0,values.y0,tn,values.X);
-                g->recalculateTotalErrors(tn, methodsPoints);
+                std::vector<std::vector<Utils::Point>> methodsPoints = u->recalculateMethods(values.x0,values.y0,tn,values.X);
+                u->recalculateTotalErrors(tn, methodsPoints);
             }
-            outputPoints = Model::Grid::getTotalErrors();
+            outputPoints = Model::Updater::getTotalErrors();
             setDataAndPlot(1, 0, emptyPoints);
             for(int mp = 1;mp<outputPoints.size();mp++)
             {
