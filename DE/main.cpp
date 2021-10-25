@@ -1,33 +1,24 @@
-#include "view.h"
 #include "controller.h"
-
-#include <QApplication>
-#include <cmath>
-#include <iostream>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    View w;
-    w.show();
-    Controller control(&w);
+    View *w = new View();
+    w->show();
+    Model::Grid *g = new Model::Grid();
+    Controller *control = new Controller(w, g);
 
-    QVector<double> x,y;
-    QVector<double> x2,y2;
+    while(true)
+    {
+        control->takeValuesFromBoxes();
+        Utils::delay(100);
+    }
 
-    double y0=1,x0=0;
-    int X=10;
-    double n = 20;
-    double h = (X-x0)/n;
+    //QVector<double> x2,y2;
 
-    double c1 = (2.0 + y0-x0)/(4.0 * pow(M_E,(4.0*x0)) * (y0-x0-2.0));
-
-    std::cout<<c1<<std::endl;
-
+    /*
     double tt = x0, yt = y0;
 
-    x.append(x0);
-    y.append(y0);
     x2.append(x0);
     y2.append(y0);
 
@@ -50,6 +41,7 @@ int main(int argc, char *argv[])
     w.addPoints(1, x2, y2);
 
     w.plot();
+    */
 
     return a.exec();
 }

@@ -13,12 +13,14 @@ SOURCES += \
     main.cpp \
     model.cpp \
     qcustomplot.cpp \
+    utils.cpp \
     view.cpp
 
 HEADERS += \
     controller.h \
     model.h \
     qcustomplot.h \
+    utils.h \
     view.h
 
 FORMS += \
